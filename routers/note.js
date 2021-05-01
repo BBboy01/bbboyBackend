@@ -2,6 +2,10 @@ const Router = require("koa-router");
 const router = new Router();
 const handleDB = require("../db/handleDB");
 
+router.get("/", async (ctx) => {
+  ctx.body = "Home";
+});
+
 // return all note title
 router.get("/notes", async (ctx) => {
   noteTitles = await handleDB(
