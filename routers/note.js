@@ -31,7 +31,9 @@ router.get("/note/:id", async (ctx) => {
     "get content error",
     `select title,content from bbboy where id=${ctx.params.id}`
   );
-  ctx.body = content[0];
+  ctx.body = content[0]
+    ? content[0]
+    : { statusCode: 4300, msg: "no such note" };
 });
 
 // get 6 lately updated notes

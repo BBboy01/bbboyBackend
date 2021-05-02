@@ -1,10 +1,11 @@
 const fs = require("fs");
+const { logger } = require("./logger");
 
 async function handleError(ctx, next) {
   try {
     await next();
   } catch (e) {
-    console.log(e);
+    logger.error(e);
     ctx.status = 500;
     ctx.body = "<h1 style=color:#9076e7>一股神秘的力量将你带离</h1>";
   }

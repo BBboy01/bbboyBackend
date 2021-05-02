@@ -1,9 +1,23 @@
 const Router = require("koa-router");
-const handleDB = require("../db/handleDB");
 const md5 = require("md5");
+const moment = require("moment");
+const handleDB = require("../db/handleDB");
+const Captcha = require("../utils/captcha");
 
 const router = new Router();
-const { md5Salt } = require("../app.config");
+const { md5Salt } = require("../config/config");
+
+router.get("/backstage/image_code/:float", async (ctx) => {
+  let captchaObj = new Captcha();
+  let captcha = captchaObj.getCode();
+  // captcha.text  // 图片验证码文本
+  // captcha.data  // 图片验证码图片内容信息
+
+  // 保存图片验证码文本到session
+  ctx.session.imageCode = captcha.text;
+  ctx.set("Content-Type", "image/svg+xml");
+  ctx.body = captcha.data;
+});
 
 router.post("/backstage/login", async (ctx) => {
   let { username, password, image_code } = ctx.request.body;
@@ -13,13 +27,15 @@ router.post("/backstage/login", async (ctx) => {
     ctx.body = { statusCode: 4399, msg: "lack necessary params" };
     return;
   }
-  if (image_code.toLowerCase() !== req.session["imageCode"].toLowerCase()) {
-    ctx.body = {
-      statusCode: 4498,
-      msg: "image verify code entered not correct",
-    };
-    return;
-  }
+
+  // check image_code by signed session
+  // if (image_code.toLowerCase() !== ctx.session.imageCode.toLowerCase()) {
+  //   ctx.body = {
+  //     statusCode: 4498,
+  //     msg: "image verify code entered not correct",
+  //   };
+  //   return;
+  // }
 
   // try get user info by the username user entered
   let result = await handleDB(
@@ -27,7 +43,7 @@ router.post("/backstage/login", async (ctx) => {
     "bbboyUser",
     "find",
     "get user error",
-    `username=${username}`
+    `username='${username}'`
   );
   if (!result[0]) {
     ctx.body = {
@@ -46,7 +62,31 @@ router.post("/backstage/login", async (ctx) => {
     return;
   }
 
-  req.session["user_id"] = md5(
+  // set login info
+  ctx.session.user_id = md5(
     md5(result[0].id) + md5Salt.slice(parseInt(md5Salt.length / 2))
   );
+
+  // update last_login
+  await handleDB(
+    ctx.response,
+    "bbboyUser",
+    "update",
+    "set last login error",
+    `id=${result[0].id}`,
+    { last_login: moment(new Date()).format("YYYY-MM-DD HH:mm:ss") }
+  );
+
+  ctx.body = { statusCode: 4000, msg: "login success" };
 });
+
+router.post("/backstage/logout", async (ctx) => {
+  delete ctx.session.user_id;
+  ctx.body = { statusCode: 4765, msg: "log out success" };
+});
+
+router.post("/note/add", async (ctx) => {
+  ctx.body = "todo";
+});
+
+module.exports = router;

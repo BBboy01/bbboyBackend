@@ -1,0 +1,23 @@
+{
+  "appenders": {
+    "access": {
+      "type": "file",
+      "filename": "logs/info/info.log",
+      "maxLogSize": 104857500,
+      "numBackups": 100
+    },
+    "application": {
+      "type": "dateFile",
+      "filename": "logs/error/error.log",
+      "pattern": "-yyyy-MM-dd.log"
+    },
+    "out": {
+      "type": "console"
+    }
+  },
+  "categories": {
+    "default": { "appenders": ["out"], "level": "DEBUG" },
+    "access": { "appenders": ["access"], "level": "INFO" },
+    "application": { "appenders": ["application"], "level": "WARN" }
+  }
+}
