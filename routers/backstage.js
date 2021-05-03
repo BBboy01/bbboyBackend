@@ -7,7 +7,7 @@ const Captcha = require("../utils/captcha");
 const router = new Router();
 const { md5Salt } = require("../config/config");
 
-router.get("/backstage/image_code/:float", async (ctx) => {
+router.get("/api/backstage/image_code/:float", async (ctx) => {
   let captchaObj = new Captcha();
   let captcha = captchaObj.getCode();
   // captcha.text  // 图片验证码文本
@@ -19,7 +19,7 @@ router.get("/backstage/image_code/:float", async (ctx) => {
   ctx.body = captcha.data;
 });
 
-router.post("/backstage/login", async (ctx) => {
+router.post("/api/backstage/login", async (ctx) => {
   let { username, password, image_code } = ctx.request.body;
 
   // check necessary params is correct
@@ -80,12 +80,12 @@ router.post("/backstage/login", async (ctx) => {
   ctx.body = { statusCode: 4000, msg: "login success" };
 });
 
-router.post("/backstage/logout", async (ctx) => {
+router.post("/api/backstage/logout", async (ctx) => {
   delete ctx.session.user_id;
   ctx.body = { statusCode: 4765, msg: "log out success" };
 });
 
-router.post("/note/add", async (ctx) => {
+router.post("/api/note/add", async (ctx) => {
   ctx.body = "todo";
 });
 

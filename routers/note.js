@@ -7,7 +7,7 @@ router.get("/", async (ctx) => {
 });
 
 // return all note title
-router.get("/notes", async (ctx) => {
+router.get("/api/notes", async (ctx) => {
   noteTitles = await handleDB(
     ctx.response,
     "bbboy",
@@ -23,7 +23,7 @@ router.get("/notes", async (ctx) => {
 });
 
 // get content of note by id
-router.get("/note/:id", async (ctx) => {
+router.get("/api/note/:id", async (ctx) => {
   let content = await handleDB(
     ctx.response,
     "bbboy",
@@ -37,7 +37,7 @@ router.get("/note/:id", async (ctx) => {
 });
 
 // get 6 lately updated notes
-router.get("/update", async (ctx) => {
+router.get("/api/update", async (ctx) => {
   let recentUpdate = await handleDB(
     ctx.response,
     "bbboy",
