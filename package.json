@@ -17,6 +17,7 @@
     "svg-captcha": "^1.4.0"
   },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "deploy": "git add . && git commit -m '.' && git push && pm2 deploy ./config/ecosystem.config.js production setup"
   }
 }
