@@ -1,5 +1,5 @@
-const md5Salt = process.env.Salt;
-const port = 3000;
+const md5Salt = process.env.SALT;
+const port = process.env.PORT;
 
 module.exports = {
   md5Salt,
