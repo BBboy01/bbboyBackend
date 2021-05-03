@@ -6,12 +6,6 @@ module.exports = {
       name: "blog",
       script: "./server.js",
       autorestart: true,
-      watch: true,
-      ignore_watch: [
-        // 不用监听的文件
-        "node_modules",
-        "logs",
-      ],
       max_memory_restart: "1G",
       error_file: "./logs/app-err.log", // 错误日志文件
       out_file: "./logs/app-out.log", // 正常日志文件
