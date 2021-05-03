@@ -1,9 +1,9 @@
 const mysql = require("mysql");
 // 数据库连接设置
 let orm_config = {
-  host: "localhost", //数据库地址
-  port: "3306",
-  user: "root", //用户名，没有可不填
+  host: process.env.SQL_URL, //数据库地址
+  port: process.env.SQL_PORT,
+  user: process.env.SQL_USERNAME, //用户名，没有可不填
   password: process.env.SQL_PWD, //密码，没有可不填
   database: "blog", //数据库名称
   dateStrings: true,
