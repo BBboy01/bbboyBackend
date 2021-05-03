@@ -18,6 +18,6 @@
   },
   "scripts": {
     "start": "nodemon server.js",
-    "deploy": "git add . && git commit -m '.' && git push && pm2 deploy ./config/ecosystem.config.js production"
+    "up": "git add . && git commit -m '.' && git push && pm2 deploy ./config/ecosystem.config.js production"
   }
 }
