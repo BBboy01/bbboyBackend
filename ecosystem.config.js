@@ -31,7 +31,7 @@ module.exports = {
       repo: "git@github.com:BBboy01/bbboyBackend.git",
       path: "/ftp/node/bbboy_blog",
       "post-deploy":
-        "git pull && yarn && pm2 reload ecosystem.config.js --env production",
+        "git pull && yarn && pm2 reload ./config/ecosystem.config.js --env production",
     },
   },
 };
