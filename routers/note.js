@@ -8,18 +8,25 @@ router.get("/", async (ctx) => {
 
 // return all note title
 router.get("/api/notes", async (ctx) => {
-  noteTitles = await handleDB(
-    ctx.response,
-    "bbboy",
-    "find",
-    "get all notes error",
-    ["title"]
-  );
-  ctx.body = noteTitles.reduce((pre, cur) => {
-    let title = cur.title ? cur.title : null;
-    pre.push(title);
-    return pre;
-  }, []);
+  if (ctx.query.num) {
+    noteTitles = await handleDB(
+      ctx.response,
+      "bbboy",
+      "sql",
+      "get all notes error",
+      "select id,title, icon_url from bbboy limit 2"
+    );
+  } else {
+    noteTitles = await handleDB(
+      ctx.response,
+      "bbboy",
+      "find",
+      "get all notes error",
+      ["id", "title", "icon_url"]
+    );
+  }
+
+  ctx.body = noteTitles;
 });
 
 // get content of note by id
