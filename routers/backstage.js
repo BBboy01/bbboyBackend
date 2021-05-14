@@ -87,6 +87,7 @@ router.post("/api/backstage/logout", async (ctx) => {
 });
 
 router.post("/api/note/add", async (ctx) => {
+  let { id } = ctx.request.body;
   if (ctx.request.file) {
     let htmlContent = await md2html(ctx.request.file);
     await handleDB(
