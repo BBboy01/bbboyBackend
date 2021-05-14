@@ -6,6 +6,7 @@ const Captcha = require("../utils/captcha");
 
 const router = new Router();
 const { md5Salt } = require("../config/config");
+const md2html = require("../utils/md2html");
 
 router.get("/api/backstage/image_code/:float", async (ctx) => {
   let captchaObj = new Captcha();
@@ -86,7 +87,18 @@ router.post("/api/backstage/logout", async (ctx) => {
 });
 
 router.post("/api/note/add", async (ctx) => {
-  ctx.body = "todo";
+  if (ctx.request.file) {
+    let htmlContent = await md2html(ctx.request.file);
+    await handleDB(
+      ctx.response,
+      "bbboy",
+      "update",
+      "update error",
+      `id=${id}`,
+      { content: htmlContent }
+    );
+  }
+  ctx.body = { statusCode: 4001, msg: "upload success" };
 });
 
 module.exports = router;
