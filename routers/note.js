@@ -36,7 +36,7 @@ router.get("/api/note/:id", async (ctx) => {
     "bbboy",
     "sql",
     "get content error",
-    `select title,content from bbboy where id=${ctx.params.id}`
+    `select id,title,content from bbboy where id=${ctx.params.id}`
   );
   ctx.body = content[0]
     ? content[0]
