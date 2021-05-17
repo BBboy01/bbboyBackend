@@ -14,7 +14,7 @@ router.get("/api/notes", async (ctx) => {
       "bbboy",
       "sql",
       "get all notes error",
-      "select id,title, icon_url from bbboy limit 2"
+      "select id,title,icon_url,visits from bbboy limit 2"
     );
   } else {
     noteTitles = await handleDB(
@@ -22,7 +22,7 @@ router.get("/api/notes", async (ctx) => {
       "bbboy",
       "find",
       "get all notes error",
-      ["id", "title", "icon_url"]
+      ["id", "title", "icon_url", "visits"]
     );
   }
 
