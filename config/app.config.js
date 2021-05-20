@@ -1,7 +1,9 @@
 const Koa = require("koa");
-const bodyParser = require("koa-bodyparser");
 const session = require("koa-session");
 const static = require("koa-static");
+// const bodyParser = require("koa-body");
+const bodyParser = require("koa-bodyparser");
+const formidable = require("koa2-formidable");
 const koaRouter = require("koa-router")();
 const path = require("path");
 
@@ -23,7 +25,12 @@ app
   .use(accessLogger())
   .use(static(path.join(__dirname, "public")))
   .use(session({ maxAge: 1000 * 3600 }, app))
-  .use(bodyParser())
+  .use(formidable())
+  .use(
+    bodyParser({
+      enableTypes: ["json", "form", "text"],
+    })
+  )
   .use(handleError)
   .use(handle404)
   .use(noteRouter.routes())

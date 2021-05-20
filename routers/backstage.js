@@ -87,18 +87,22 @@ router.post("/api/backstage/logout", async (ctx) => {
 });
 
 router.post("/api/note/add", async (ctx) => {
-  let { id } = ctx.request.body;
-  if (ctx.request.file) {
-    let htmlContent = await md2html(ctx.request.file);
-    await handleDB(
-      ctx.response,
-      "bbboy",
-      "update",
-      "update error",
-      `id=${id}`,
-      { content: htmlContent }
-    );
-  }
+  const data = ctx.request.body.content;
+  console.log(data);
+  // const fileReader = fs.createReadStream(file.path);
+  // console.log(fileReader);
+  // let { id } = ctx.request.body;
+  // if (ctx.request.file) {
+  //   let htmlContent = await md2html(ctx.request.file);
+  //   await handleDB(
+  //     ctx.response,
+  //     "bbboy",
+  //     "update",
+  //     "update error",
+  //     `id=${id}`,
+  //     { content: htmlContent }
+  //   );
+  // }
   ctx.body = { statusCode: 4001, msg: "upload success" };
 });
 

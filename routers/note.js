@@ -22,7 +22,7 @@ router.get("/api/notes", async (ctx) => {
       "bbboy",
       "find",
       "get all notes error",
-      ["id", "title", "icon_url", "visits"]
+      ["id", "title", "icon_url", "visits", "category"]
     );
   }
 
