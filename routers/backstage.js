@@ -87,23 +87,37 @@ router.post("/api/backstage/logout", async (ctx) => {
 });
 
 router.post("/api/note/add", async (ctx) => {
-  const data = ctx.request.body.content;
-  console.log(data);
-  // const fileReader = fs.createReadStream(file.path);
-  // console.log(fileReader);
-  // let { id } = ctx.request.body;
-  // if (ctx.request.file) {
-  //   let htmlContent = await md2html(ctx.request.file);
-  //   await handleDB(
-  //     ctx.response,
-  //     "bbboy",
-  //     "update",
-  //     "update error",
-  //     `id=${id}`,
-  //     { content: htmlContent }
-  //   );
-  // }
-  ctx.body = { statusCode: 4001, msg: "upload success" };
+  let { title, category, content, iconUrl, timeStamp } = ctx.request.body;
+  title = title.split(".").slice(0, -1).join("");
+  let htmlContent = await md2html(content);
+  let time = moment(timeStamp).format("YYYY-MM-DD HH:mm:ss");
+
+  // check whether file exist by file name
+  let checkResult = await handleDB(
+    ctx.response,
+    "bbboy",
+    "find",
+    "find error",
+    `title="${title}"`
+  );
+  if (checkResult[0]) {
+    ctx.body = { statusCode: 4002, msg: "this note already exist" };
+    return;
+  }
+
+  // add note
+  let addResult = await handleDB(
+    ctx.response,
+    "bbboy",
+    "sql",
+    "insert error",
+    `INSERT INTO bbboy(title, content, update_time, icon_url, category) VALUES ("${title}", '${htmlContent}', '${time}', "${iconUrl}", "${category}")`
+  );
+  if (addResult.insertId) {
+    ctx.body = { statusCode: 4001, msg: "upload success" };
+  }
+
+  ctx.body = { statusCode: 8888888, msg: "unknown error" };
 });
 
 module.exports = router;
