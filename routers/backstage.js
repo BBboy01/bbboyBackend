@@ -88,6 +88,13 @@ router.post("/api/backstage/logout", async (ctx) => {
 
 router.post("/api/note/add", async (ctx) => {
   let { title, category, content, iconUrl, timeStamp } = ctx.request.body;
+
+  // check params not null
+  if (!title || !category || !content || !iconUrl || !timeStamp) {
+    ctx.body = { statusCode: 4000, msg: "Each param is necessary" };
+    return;
+  }
+
   title = title.split(".").slice(0, -1).join("");
   let htmlContent = await md2html(content);
   let time = moment(timeStamp).format("YYYY-MM-DD HH:mm:ss");
@@ -113,11 +120,11 @@ router.post("/api/note/add", async (ctx) => {
     "insert error",
     `INSERT INTO bbboy(title, content, update_time, icon_url, category) VALUES ("${title}", '${htmlContent}', '${time}', "${iconUrl}", "${category}")`
   );
-  if (addResult.insertId) {
-    ctx.body = { statusCode: 4001, msg: "upload success" };
+  if (!addResult.insertId) {
+    ctx.body = { statusCode: 8888888, msg: "unknown error" };
   }
 
-  ctx.body = { statusCode: 8888888, msg: "unknown error" };
+  ctx.body = { statusCode: 4001, msg: "upload success" };
 });
 
 module.exports = router;

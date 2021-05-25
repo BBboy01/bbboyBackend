@@ -3,7 +3,7 @@ const router = new Router();
 const handleDB = require("../db/handleDB");
 
 router.get("/", async (ctx) => {
-  ctx.body = "Home";
+  ctx.body = { statusCode: 4300, msg: "Home" };
 });
 
 // return all note title
@@ -14,7 +14,7 @@ router.get("/api/notes", async (ctx) => {
       "bbboy",
       "sql",
       "get all notes error",
-      "select id,title,icon_url,visits from bbboy limit 2"
+      "select id,title,icon_url,visits,category,update_time from bbboy limit 2"
     );
   } else {
     noteTitles = await handleDB(
@@ -22,7 +22,7 @@ router.get("/api/notes", async (ctx) => {
       "bbboy",
       "find",
       "get all notes error",
-      ["id", "title", "icon_url", "visits", "category"]
+      ["id", "title", "icon_url", "visits", "category", "update_time"]
     );
   }
 
@@ -36,7 +36,7 @@ router.get("/api/note/:id", async (ctx) => {
     "bbboy",
     "sql",
     "get content error",
-    `select id,title,content from bbboy where id=${ctx.params.id}`
+    `select id,title,content,update_time from bbboy where id=${ctx.params.id}`
   );
   ctx.body = content[0]
     ? content[0]

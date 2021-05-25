@@ -6,7 +6,6 @@
   "dependencies": {
     "highlight.js": "^10.7.2",
     "koa": "^2.13.1",
-    "koa-body": "^4.2.0",
     "koa-bodyparser": "^4.3.0",
     "koa-log4": "^2.3.2",
     "koa-logger": "^3.2.1",

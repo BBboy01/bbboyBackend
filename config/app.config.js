@@ -1,7 +1,6 @@
 const Koa = require("koa");
 const session = require("koa-session");
 const static = require("koa-static");
-// const bodyParser = require("koa-body");
 const bodyParser = require("koa-bodyparser");
 const formidable = require("koa2-formidable");
 const koaRouter = require("koa-router")();

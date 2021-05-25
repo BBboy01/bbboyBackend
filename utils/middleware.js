@@ -1,4 +1,3 @@
-const fs = require("fs");
 const { logger } = require("./logger");
 
 async function handleError(ctx, next) {
@@ -15,7 +14,7 @@ async function handle404(ctx, next) {
   await next();
   if (parseInt(ctx.status) === 404) {
     ctx.status = 404;
-    ctx.body = fs.readFileSync("./public/404.html").toString();
+    ctx.body = { statusCode: 4040, msg: "no such url" };
   }
 }
 
