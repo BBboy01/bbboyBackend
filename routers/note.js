@@ -36,23 +36,22 @@ router.get("/api/note/:id", async (ctx) => {
     "bbboy",
     "sql",
     "get content error",
-    `select id,title,content,update_time from bbboy where id=${ctx.params.id}`
+    `select id,title,content,update_time,visits from bbboy where id=${ctx.params.id}`
   );
-  ctx.body = content[0]
-    ? content[0]
-    : { statusCode: 4300, msg: "no such note" };
-});
-
-// get 6 lately updated notes
-router.get("/api/update", async (ctx) => {
-  let recentUpdate = await handleDB(
-    ctx.response,
-    "bbboy",
-    "sql",
-    "get update error",
-    "select id,title,content,update_time from bbboy order by update_time desc limit 6"
-  );
-  ctx.body = recentUpdate;
+  if (!content[0]) {
+    ctx.body = { statusCode: 4300, msg: "no such note" };
+  } else {
+    // visit number plus one
+    await handleDB(
+      ctx.response,
+      "bbboy",
+      "update",
+      "update error",
+      `id=${ctx.params.id}`,
+      { visits: content[0].visits + 1 }
+    );
+    ctx.body = content[0];
+  }
 });
 
 module.exports = router;

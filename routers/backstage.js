@@ -5,7 +5,7 @@ const handleDB = require("../db/handleDB");
 const Captcha = require("../utils/captcha");
 
 const router = new Router();
-const { md5Salt } = require("../config/config");
+const { md5Salt, iconUrls } = require("../config/config");
 const md2html = require("../utils/md2html");
 
 router.get("/api/backstage/image_code/:float", async (ctx) => {
@@ -90,13 +90,15 @@ router.post("/api/note/add", async (ctx) => {
   let { title, category, content, iconUrl, timeStamp } = ctx.request.body;
 
   // check params not null
-  if (!title || !category || !content || !iconUrl || !timeStamp) {
-    ctx.body = { statusCode: 4000, msg: "Each param is necessary" };
+  if (!title || !category || !content || !timeStamp) {
+    ctx.body = { statusCode: 4000, msg: "Lack of necessary is necessary" };
     return;
   }
 
   title = title.split(".").slice(0, -1).join("");
-  let htmlContent = await md2html(content);
+  let htmlContentBase64 = Buffer.from(await md2html(content), "utf-8").toString(
+    "base64"
+  );
   let time = moment(timeStamp).format("YYYY-MM-DD HH:mm:ss");
 
   // check whether file exist by file name
@@ -112,19 +114,29 @@ router.post("/api/note/add", async (ctx) => {
     return;
   }
 
+  // if user specified icon url, then replace the prepared icon url
+  let iconUrlResult = iconUrls.data[category];
+  if (iconUrl) {
+    iconUrlResult = iconUrl;
+  }
+
   // add note
   let addResult = await handleDB(
     ctx.response,
     "bbboy",
     "sql",
     "insert error",
-    `INSERT INTO bbboy(title, content, update_time, icon_url, category) VALUES ("${title}", '${htmlContent}', '${time}', "${iconUrl}", "${category}")`
+    `INSERT INTO bbboy(title, content, update_time, icon_url, category) VALUES ("${title}", "${htmlContentBase64}", '${time}', "${iconUrlResult}", "${category}")`
   );
   if (!addResult.insertId) {
     ctx.body = { statusCode: 8888888, msg: "unknown error" };
   }
 
   ctx.body = { statusCode: 4001, msg: "upload success" };
+});
+
+router.get("/api/categories", async (ctx) => {
+  ctx.body = { categoryList: iconUrls.categories };
 });
 
 module.exports = router;
