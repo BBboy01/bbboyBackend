@@ -22,6 +22,10 @@ app
     logger.error(err);
   })
   .use(accessLogger())
+  .use(async (ctx, next) => {
+    ctx.set("Access-Control-Allow-Origin", "*");
+    await next();
+  })
   .use(static(path.join(__dirname, "public")))
   .use(session({ maxAge: 1000 * 3600 }, app))
   .use(formidable())
