@@ -1,9 +1,7 @@
-const md5Salt = process.env.SALT;
-const port = process.env.SERVER_PORT;
-const sqlHost = process.env.SQL_URL;
-const sqlPort = process.env.SQL_PORT;
-const sqlUserName = process.env.SQL_USERNAME;
-const sqlPassword = process.env.SQL_PWD;
+const dotenv = require("dotenv");
+
+dotenv.config();
+
 const iconUrls = {
   categories: ["Python", "NodeJs", "Vue", "JavaScript", "unknown"],
   data: {
@@ -24,5 +22,7 @@ module.exports = {
   sqlPort,
   sqlUserName,
   sqlPassword,
-  iconUrls,
-};
+  sqlDatabase,
+} = process.env;
+
+module.exports.iconUrls = iconUrls;

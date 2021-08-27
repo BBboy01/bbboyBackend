@@ -1,27 +1,15 @@
 const Router = require("koa-router");
 const md5 = require("md5");
 const moment = require("moment");
-const handleDB = require("../db/handleDB");
-const Captcha = require("../utils/captcha");
+const connection = require("../db/database");
 
 const router = new Router();
 const { md5Salt, iconUrls } = require("../config/config");
 const md2html = require("../utils/md2html");
 
-router.get("/api/backstage/image_code/:float", async (ctx) => {
-  let captchaObj = new Captcha();
-  let captcha = captchaObj.getCode();
-  // captcha.text  // 图片验证码文本
-  // captcha.data  // 图片验证码图片内容信息
-
-  // 保存图片验证码文本到session
-  ctx.session.imageCode = captcha.text;
-  ctx.set("Content-Type", "image/svg+xml");
-  ctx.body = captcha.data;
-});
-
 router.post("/api/backstage/login", async (ctx) => {
-  let { username, password, image_code } = ctx.request.body;
+  const { username, password, image_code } = ctx.request.body;
+  let statement;
 
   // check necessary params is correct
   if (!username || !password || !image_code) {
@@ -29,23 +17,10 @@ router.post("/api/backstage/login", async (ctx) => {
     return;
   }
 
-  // check image_code by signed session
-  // if (image_code.toLowerCase() !== ctx.session.imageCode.toLowerCase()) {
-  //   ctx.body = {
-  //     statusCode: 4498,
-  //     msg: "image verify code entered not correct",
-  //   };
-  //   return;
-  // }
-
   // try get user info by the username user entered
-  let result = await handleDB(
-    ctx.response,
-    "bbboyUser",
-    "find",
-    "get user error",
-    `username='${username}'`
-  );
+  statement = `SELECT * FROM bbboyUser WHERE username = ?`;
+  const [result] = await connection.execute(statement, [username]);
+
   if (!result[0]) {
     ctx.body = {
       statusCode: 4597,
@@ -69,14 +44,11 @@ router.post("/api/backstage/login", async (ctx) => {
   );
 
   // update last_login
-  await handleDB(
-    ctx.response,
-    "bbboyUser",
-    "update",
-    "set last login error",
-    `id=${result[0].id}`,
-    { last_login: moment(new Date()).format("YYYY-MM-DD HH:mm:ss") }
-  );
+  statement = `UPDATE bbboyUser SET last_login = ? WHERE id = ?`;
+  await connection.execute(statement, [
+    moment(new Date()).format("YYYY-MM-DD HH:mm:ss"),
+    result[0].id,
+  ]);
 
   ctx.body = { statusCode: 4000, msg: "login success" };
 });
@@ -87,47 +59,44 @@ router.post("/api/backstage/logout", async (ctx) => {
 });
 
 router.post("/api/note/add", async (ctx) => {
-  let { title, category, content, iconUrl, timeStamp } = ctx.request.body;
+  const { title, category, content, iconUrl, timeStamp } = ctx.request.body;
+  let statement;
 
   // check params not null
   if (!title || !category || !content || !timeStamp) {
     ctx.body = { statusCode: 4000, msg: "Lack of necessary is necessary" };
-    return;
   }
 
   title = title.split(".").slice(0, -1).join("");
-  let htmlContentBase64 = Buffer.from(await md2html(content), "utf-8").toString(
-    "base64"
-  );
-  let time = moment(timeStamp).format("YYYY-MM-DD HH:mm:ss");
+  const htmlContentBase64 = Buffer.from(
+    await md2html(content),
+    "utf-8"
+  ).toString("base64");
+  const time = moment(timeStamp).format("YYYY-MM-DD HH:mm:ss");
 
   // check whether file exist by file name
-  let checkResult = await handleDB(
-    ctx.response,
-    "bbboy",
-    "find",
-    "find error",
-    `title="${title}"`
-  );
-  if (checkResult[0]) {
+  statement = `SELECT * FROM bbboy WHERE title = ?`;
+  const [result] = await connection.execute(statement, [title]);
+  if (result[0]) {
     ctx.body = { statusCode: 4002, msg: "this note already exist" };
-    return;
   }
 
   // if user specified icon url, then replace the prepared icon url
-  let iconUrlResult = iconUrls.data[category];
+  const iconUrlResult = iconUrls.data[category];
   if (iconUrl) {
     iconUrlResult = iconUrl;
   }
 
   // add note
-  let addResult = await handleDB(
-    ctx.response,
-    "bbboy",
-    "sql",
-    "insert error",
-    `INSERT INTO bbboy(title, content, update_time, icon_url, category) VALUES ("${title}", "${htmlContentBase64}", '${time}', "${iconUrlResult}", "${category}")`
-  );
+  statement = `INSERT INTO bbboy(title, content, update_time, icon_url, category) VALUES (?, ?, ?, ?, ?)`;
+  const [addResult] = await connection.execute(statement, [
+    title,
+    htmlContentBase64,
+    time,
+    iconUrlResult,
+    category,
+  ]);
+
   if (!addResult.insertId) {
     ctx.body = { statusCode: 8888888, msg: "unknown error" };
   }

@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^10.0.0",
     "highlight.js": "^10.7.2",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
@@ -16,7 +17,7 @@
     "markdown-it": "^12.0.6",
     "md5": "^2.3.0",
     "moment": "^2.29.1",
-    "mysql": "^2.18.1",
+    "mysql2": "^2.3.0",
     "svg-captcha": "^1.4.0"
   },
   "scripts": {
