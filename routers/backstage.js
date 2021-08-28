@@ -1,7 +1,7 @@
 const Router = require("koa-router");
 const md5 = require("md5");
 const moment = require("moment");
-const connection = require("../db/database");
+const connection = require("../db");
 
 const router = new Router();
 const { md5Salt, iconUrls } = require("../config/config");

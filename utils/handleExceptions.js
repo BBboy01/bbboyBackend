@@ -14,7 +14,7 @@ async function handle404(ctx, next) {
   await next();
   if (parseInt(ctx.status) === 404) {
     ctx.status = 404;
-    ctx.body = { statusCode: 4040, msg: "no such url" };
+    ctx.body = { msg: "no such url", data: "" };
   }
 }
 

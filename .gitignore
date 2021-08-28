@@ -116,3 +116,5 @@ dist
 
 # user conifg file
 .env
+.vscode/
+configs/keys/
