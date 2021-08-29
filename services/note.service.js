@@ -7,6 +7,7 @@ class NoteService {
 
     return result;
   }
+
   async getNote(noteId) {
     const statement = `SELECT id, title, content, update_time, visits FROM bbboy WHERE id = ?`;
     const [result] = await connection.execute(statement, [noteId]);
@@ -18,6 +19,10 @@ class NoteService {
       ]));
 
     return result[0];
+  }
+
+  async createNote(data) {
+    const { title, content, isShow, iconUrl, category } = data;
   }
 }
 

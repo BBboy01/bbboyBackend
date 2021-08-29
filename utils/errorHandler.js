@@ -29,6 +29,10 @@ const errorHandler = (err, ctx) => {
       status = 401;
       message = "无权限的操作";
       break;
+    case errorTypes.DATA_VALIDATE_FAILED:
+      status = 400;
+      message = "数据格式有误";
+      break;
     default:
       status = 404;
       message = "NOT FOUND";
@@ -37,7 +41,7 @@ const errorHandler = (err, ctx) => {
   logger.error(err);
 
   ctx.status = status;
-  ctx.body = { msg: message };
+  ctx.body = { msg: message, data: {} };
 };
 
 module.exports = errorHandler;

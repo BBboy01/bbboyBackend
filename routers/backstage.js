@@ -4,7 +4,7 @@ const moment = require("moment");
 const connection = require("../db");
 
 const router = new Router();
-const { md5Salt, iconUrls } = require("../config/config");
+const { md5Salt, iconUrls } = require("../configs/config");
 const md2html = require("../utils/md2html");
 
 router.post("/api/backstage/login", async (ctx) => {

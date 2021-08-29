@@ -8,6 +8,7 @@ const {
   NAME_AND_PASSWORD_ARE_REQUIRED,
   USER_DOES_NOT_EXIST,
   PASSWORD_INCORRECT,
+  UNAUTHORIZED,
 } = require("../configs/errorTypes");
 
 const verifyLogin = async (ctx, next) => {

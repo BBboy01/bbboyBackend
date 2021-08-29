@@ -1,4 +1,4 @@
-const { getNotes, getNote } = require("../services/note.service");
+const { getNotes, getNote, createNote } = require("../services/note.service");
 
 class NoteController {
   async getAllNotes(ctx) {
@@ -16,6 +16,11 @@ class NoteController {
     ctx.body = !!result
       ? { msg: "ok", data: result }
       : { msg: "failed", data: {} };
+  }
+
+  async addNote(ctx) {
+    await createNote(ctx.request.body);
+    ctx.body = { msg: "ok", data: {} };
   }
 }
 
