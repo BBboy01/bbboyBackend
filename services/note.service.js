@@ -23,6 +23,14 @@ class NoteService {
 
   async createNote(data) {
     const { title, content, isShow, iconUrl, category } = data;
+    let statement;
+    title = title.split(".").slice(0, -1).join("");
+    const htmlContentBase64 = Buffer.from(
+      await md2html(content),
+      "utf-8"
+    ).toString("base64");
+    statement = `SELECT * FROM bbboy WHERE title = ?`;
+    const [result] = await connection.execute(statement, [title]);
   }
 }
 
