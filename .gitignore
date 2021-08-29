@@ -118,3 +118,4 @@ dist
 .env
 .vscode/
 configs/keys/
+test.js
