@@ -1,6 +1,7 @@
 const Ajv = require("ajv");
 
-const { DATA_VALIDATE_FAILED } = require("../configs/errorTypes");
+const { DATA_VALIDATE_FAILED, NONEXISTENT_NOTE } = require("../configs/errorTypes");
+const { getNoteByTitle } = require("../services/note.service");
 
 const ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
 require("ajv-formats")(ajv);
@@ -33,4 +34,16 @@ const validateAddNote = async (ctx, next) => {
   await next();
 };
 
-module.exports = { validateAddNote };
+const validatePatchNote = async (ctx, next) => {
+  const valid = validate(ctx.request.body);
+  if (!valid) {
+    return ctx.app.emit("error", new Error(DATA_VALIDATE_FAILED), ctx);
+  }
+  const isExist = await getNoteByTitle(ctx.request.body.title);
+  if (!isExist[0]) {
+    return ctx.app.emit("error", new Error(NONEXISTENT_NOTE), ctx);
+  }
+  await next();
+};
+
+module.exports = { validateAddNote, validatePatchNote };

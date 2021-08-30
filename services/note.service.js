@@ -1,29 +1,20 @@
 const connection = require("../db");
 const md2html = require("../utils/md2html");
-
-const ICON_URLS = {
-  categories: ["Python", "NodeJs", "Vue", "JavaScript", "unknown"],
-  data: {
-    Python: "https://cdn.iconscout.com/icon/free/png-128/python-2-226051.png",
-    NodeJs: "https://cdn.iconscout.com/icon/free/png-128/nodejs-6-569582.png",
-    Vue: "https://cdn.iconscout.com/icon/free/png-128/vue-282497.png",
-    JavaScript:
-      "https://cdn.iconscout.com/icon/free/png-128/javascript-2038874-1720087.png",
-    unknown:
-      "https://cdn.iconscout.com/icon/premium/png-128-thumb/minecraft-78-554374.png",
-  },
-};
+const { getAllCategory } = require("./categories.service");
 
 class NoteService {
   async getNotes() {
-    const statement = `SELECT id, title, icon_url, visits, category, update_time FROM bbboy limit 2`;
+    const statement = `SELECT * FROM bbboy ORDER BY visits DESC`;
     const [result] = await connection.execute(statement);
+    const statementOrderByTime = `SELECT * FROM bbboy ORDER BY update_at DESC`;
+    const [resultOrdered] = await connection.execute(statementOrderByTime);
 
-    return result;
+    return { orderedByVisit: result, orderedByTime: resultOrdered };
   }
 
   async getNoteById(noteId) {
-    const statement = `SELECT id, title, content, update_time, visits FROM bbboy WHERE id = ?`;
+    if (typeof parseInt(noteId) !== "number") return null;
+    const statement = `SELECT * FROM bbboy WHERE id = ?`;
     const [result] = await connection.execute(statement, [noteId]);
     // visit number +1
     !!result[0] &&
@@ -43,39 +34,51 @@ class NoteService {
   }
 
   async createNote(data) {
-    const { title, content, isShow, iconUrl, category } = data;
-    let statement;
+    const { title, content, isShow = 1, iconUrl, category } = data;
     // title = title.split(".").slice(0, -1).join("");
-    const htmlContentBase64 = Buffer.from(
-      await md2html(content),
-      "utf-8"
-    ).toString("base64");
-
+    const htmlContentBase64 = Buffer.from(await md2html(content), "utf-8").toString("base64");
+    // if user specified icon url, then replace the prepared icon url
+    const iconUrls = await getAllCategory();
+    const resultCategory = iconUrls.categories.includes(category) ? category : "unknown";
+    const iconUrlResult = iconUrl ? iconUrl : iconUrls.iconUrls[resultCategory];
+    // check if notes exist
     const result = await this.getNoteByTitle(title);
     if (result[0]) {
-      statement = `UPDATE bbboy SET content = ? WHERE id = ?`;
-      const updateResult = await connection.execute(statement, [
+      // do update
+      const updateResult = await this.updateNote(
+        title,
         htmlContentBase64,
-        result[0].id,
-      ]);
+        isShow,
+        iconUrlResult,
+        resultCategory
+      );
 
       return updateResult ? true : false;
     }
-    // if user specified icon url, then replace the prepared icon url
-    const iconUrlResult = ICON_URLS.data[category];
-    if (iconUrl) {
-      iconUrlResult = iconUrl;
-    }
     // add note
-    statement = `INSERT INTO bbboy (title, content, icon_url, category) VALUES (?, ?, ?, ?)`;
+    const statement = `INSERT INTO bbboy (title, content, icon_url, category, is_show) VALUES (?, ?, ?, ?, ?)`;
     const [addResult] = await connection.execute(statement, [
       title,
       htmlContentBase64,
       iconUrlResult,
-      category,
+      resultCategory,
+      isShow,
     ]);
 
     return addResult ? true : false;
+  }
+
+  async updateNote(
+    title,
+    content,
+    isShow = 1,
+    iconUrl = "https://cdn.iconscout.com/icon/premium/png-128-thumb/minecraft-78-554374.png",
+    category
+  ) {
+    const statement = `UPDATE bbboy SET content = ?, is_show = ?, icon_url = ?, category = ? WHERE title = ?`;
+    const result = await connection.execute(statement, [content, isShow, iconUrl, category, title]);
+
+    return result;
   }
 }
 

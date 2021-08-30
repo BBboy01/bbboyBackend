@@ -5,6 +5,7 @@ const PASSWORD_INCORRECT = "password_incorrect";
 const UNAUTHORIZED = "unauthorized";
 const NOT_PERMITTED = "not_permitted";
 const DATA_VALIDATE_FAILED = "data_validate_failed";
+const NONEXISTENT_NOTE = "nonexistent_note";
 
 module.exports = {
   NAME_AND_PASSWORD_ARE_REQUIRED,
@@ -14,4 +15,5 @@ module.exports = {
   UNAUTHORIZED,
   NOT_PERMITTED,
   DATA_VALIDATE_FAILED,
+  NONEXISTENT_NOTE,
 };

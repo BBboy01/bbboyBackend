@@ -14,21 +14,25 @@ class NoteController {
 
   async getSpecificNotes(ctx) {
     const { noteId } = ctx.params;
-
-    console.log("in");
     const result = await noteService.getNoteById(noteId);
 
-    ctx.body = !!result
-      ? { msg: "ok", data: result }
-      : { msg: "failed", data: {} };
+    ctx.body = { msg: result ? "ok" : "not found", data: result };
   }
 
   async addNote(ctx) {
     const result = await noteService.createNote(ctx.request.body);
+
     ctx.body = {
       msg: result ? "ok" : "create or update note failed",
       data: {},
     };
+  }
+
+  async patchNote(ctx) {
+    const { title, content, isShow, iconUrl, category } = ctx.request.body;
+    const result = await noteService.updateNote(title, content, isShow, iconUrl, category);
+
+    ctx.body = { msg: result ? "ok" : "update note failed", data: {} };
   }
 }
 

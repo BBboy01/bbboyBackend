@@ -33,6 +33,10 @@ const errorHandler = (err, ctx) => {
       status = 400;
       message = "数据格式有误";
       break;
+    case errorTypes.NONEXISTENT_NOTE:
+      status = 400;
+      message = "不存在的笔记";
+      break;
     default:
       status = 404;
       message = "NOT FOUND";
