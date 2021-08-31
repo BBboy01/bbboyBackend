@@ -1,0 +1,143 @@
+openapi: 3.0.0
+info:
+  title: BBBlog API
+  description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
+  version: 0.0.1
+
+# servers:
+#   - url: http://api.example.com/v1
+#     description: Optional server description, e.g. Main (production) server
+#   - url: http://staging-api.example.com
+#     description: Optional server description, e.g. Internal staging server for testing
+
+paths:
+  /note:
+    get:
+      summary: 返回所有的笔记信息
+      responses:
+        "200": # status code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    description: Response status
+
+                  data:
+                    type: object
+                    properties:
+                      orderedByVisit:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            title:
+                              type: string
+                            content:
+                              type: string
+                              description: HTML 化 之后的 markdown 内容然后再进行 BASE64 编码的结果
+                            is_show:
+                              type: integer
+                              minimum: 0
+                              maximum: 1
+                            icon_url:
+                              type: string
+                              format: url
+                              description: icon url
+                            category:
+                              type: string
+                            visits:
+                              type: integer
+                            create_at:
+                              type: string
+                              format: date-time
+                            update_at:
+                              type: string
+                              format: date-time
+
+                      orderedByTime:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            title:
+                              type: string
+                            content:
+                              type: string
+                              description: HTML 化 之后的 markdown 内容然后再进行 BASE64 编码的结果
+                            is_show:
+                              type: integer
+                              minimum: 0
+                              maximum: 1
+                            icon_url:
+                              type: string
+                              format: url
+                              description: icon url
+                            category:
+                              type: string
+                            visits:
+                              type: integer
+                            create_at:
+                              type: string
+                              format: date-time
+                            update_at:
+                              type: string
+                              format: date-time
+  /note/{noteId}:
+    get:
+      summary: 通过笔记ID返回特定的笔记
+      parameters:
+        - name: noteId
+          in: path
+          required: true
+          description: 笔记的的`ID`
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    description: Response status
+
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      content:
+                        type: string
+                        description: HTML 化 之后的 markdown 内容然后再进行 BASE64 编码的结果
+                      is_show:
+                        type: integer
+                        minimum: 0
+                        maximum: 1
+                      icon_url:
+                        type: string
+                        format: url
+                        description: icon url
+                      category:
+                        type: string
+                      visits:
+                        type: integer
+                      create_at:
+                        type: string
+                        format: date-time
+                      update_at:
+                        type: string
+                        format: date-time

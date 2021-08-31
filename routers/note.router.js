@@ -1,5 +1,4 @@
 const Router = require("koa-router");
-const noteRouter = new Router({ prefix: "/note" });
 
 const {
   getAllNotes,
@@ -9,6 +8,8 @@ const {
 } = require("../controllers/note.controller");
 const { verifyAuth } = require("../middlewares/auth.middleware");
 const { validateAddNote, validatePatchNote } = require("../middlewares/validate.middleware");
+
+const noteRouter = new Router({ prefix: "/note" });
 
 noteRouter.get("/", getAllNotes);
 noteRouter.get("/:noteId", getSpecificNotes);

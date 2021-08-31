@@ -1,6 +1,8 @@
 const Router = require("koa-router");
-const categoryRouter = new Router({ prefix: "/categories" });
+
 const { getCategories } = require("../controllers/category.controller");
+
+const categoryRouter = new Router({ prefix: "/categories" });
 
 categoryRouter.get("/", getCategories);
 

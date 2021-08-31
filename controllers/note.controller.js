@@ -1,8 +1,3 @@
-// const {
-//   getNotes,
-//   getNoteById,
-//   createNote,
-// } = require("../services/note.service");
 const noteService = require("../services/note.service");
 
 class NoteController {

@@ -16,8 +16,9 @@ class NoteService {
     if (typeof parseInt(noteId) !== "number") return null;
     const statement = `SELECT * FROM bbboy WHERE id = ?`;
     const [result] = await connection.execute(statement, [noteId]);
+    if (!result[0]) return null;
     // visit number +1
-    !!result[0] &&
+    result[0] &&
       (await connection.execute(`UPDATE bbboy SET visits = ? WHERE id = ?`, [
         result[0].visits + 1,
         noteId,
