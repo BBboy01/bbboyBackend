@@ -9,7 +9,7 @@
   dependencies:
     vary "^1.1.2"
 
-"@koa/router@^10.0.0":
+"@koa/router@^10.0.0", "@koa/router@^10.1.1":
   version "10.1.1"
   resolved "https://registry.nlark.com/@koa/router/download/@koa/router-10.1.1.tgz#8e5a85c9b243e0bc776802c0de564561e57a5f78"
   integrity sha1-jlqFybJD4Lx3aALA3lZFYeV6X3g=
@@ -717,17 +717,6 @@ koa-logger@^3.2.1:
     chalk "^2.4.2"
     humanize-number "0.0.2"
     passthrough-counter "^1.0.0"
-
-koa-router@^10.0.0:
-  version "10.0.0"
-  resolved "https://registry.npm.taobao.org/koa-router/download/koa-router-10.0.0.tgz#7bc76a031085731e61fc92c1683687b2f44de6a4"
-  integrity sha1-e8dqAxCFcx5h/JLBaDaHsvRN5qQ=
-  dependencies:
-    debug "^4.1.1"
-    http-errors "^1.7.3"
-    koa-compose "^4.1.0"
-    methods "^1.1.2"
-    path-to-regexp "^6.1.0"
 
 koa-send@^5.0.1:
   version "5.0.1"

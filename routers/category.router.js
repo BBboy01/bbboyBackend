@@ -1,4 +1,4 @@
-const Router = require("koa-router");
+const Router = require("@koa/router");
 
 const { getCategories } = require("../controllers/category.controller");
 
