@@ -24,75 +24,118 @@ paths:
                 type: object
                 properties:
                   msg:
-                    type: string
-                    description: Response status
-                    example: ok
-
+                    $ref: "#/components/MSGData"
                   data:
                     type: object
                     properties:
                       orderedByVisit:
                         type: array
                         items:
-                          type: object
-                          properties:
-                            id:
-                              type: integer
-                            title:
-                              type: string
-                            content:
-                              type: string
-                              description: HTML 化 之后的 markdown 内容然后再进行 BASE64 编码的结果
-                            is_show:
-                              type: integer
-                              minimum: 0
-                              maximum: 1
-                            icon_url:
-                              type: string
-                              format: url
-                              description: icon url
-                              example: https://cdn.iconscout.com/icon/free/png-128/python-2-226051.png
-                            category:
-                              type: string
-                            visits:
-                              type: integer
-                            create_at:
-                              type: string
-                              format: date-time
-                            update_at:
-                              type: string
-                              format: date-time
-
+                          $ref: "#/components/NoteData"
                       orderedByTime:
                         type: array
                         items:
-                          type: object
-                          properties:
-                            id:
-                              type: integer
-                            title:
-                              type: string
-                            content:
-                              type: string
-                              description: HTML 化 之后的 markdown 内容然后再进行 BASE64 编码的结果
-                            is_show:
-                              type: integer
-                              minimum: 0
-                              maximum: 1
-                            icon_url:
-                              type: string
-                              format: url
-                              description: icon url
-                            category:
-                              type: string
-                            visits:
-                              type: integer
-                            create_at:
-                              type: string
-                              format: date-time
-                            update_at:
-                              type: string
-                              format: date-time
+                          $ref: "#/components/NoteData"
+    post:
+      summary: 添加或更新笔记
+      description: 以`title`为条件，如果笔记不存在则添加该笔记，否则更新该笔记
+      tags:
+        - notes
+      security:
+        - BearerAuth: [add]
+      requestBody:
+        description: 提供笔记的信息
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/NoteInfo"
+      responses:
+        "200":
+          description: "成功"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    $ref: "#/components/MSGData"
+                  data:
+                    type: object
+        "400":
+          description: "数据校验未通过"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: 数据格式有误
+                  data:
+                    type: object
+          "401":
+            description: "操作未授权"
+            content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: 无效或过期的token
+                  data:
+                    type: object
+    patch:
+      summary: 更新笔记
+      tags:
+        - notes
+      security:
+        - BearerAuth: [update]
+      requestBody:
+        description: 提供笔记的信息
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/NoteInfo"
+      responses:
+        "200":
+          description: "成功"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    $ref: "#/components/MSGData"
+                  data:
+                    type: object
+        "400":
+          description: "数据校验未通过"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: 数据格式有误
+                  data:
+                    type: object
+        "401":
+          description: "操作不正确"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: 不存在的笔记
+                  data:
+                    type: object
+
   /note/{noteId}:
     get:
       summary: 通过笔记ID返回特定的笔记
@@ -116,39 +159,9 @@ paths:
                 type: object
                 properties:
                   msg:
-                    type: string
-                    description: Response status
-                    example: ok
-
+                    $ref: "#/components/MSGData"
                   data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      title:
-                        type: string
-                      content:
-                        type: string
-                        description: HTML 化 之后的 markdown 内容然后再进行 BASE64 编码的结果
-                      is_show:
-                        type: integer
-                        minimum: 0
-                        maximum: 1
-                      icon_url:
-                        type: string
-                        format: url
-                        description: icon url
-                        example: https://cdn.iconscout.com/icon/free/png-128/python-2-226051.png
-                      category:
-                        type: string
-                      visits:
-                        type: integer
-                      create_at:
-                        type: string
-                        format: date-time
-                      update_at:
-                        type: string
-                        format: date-time
+                    $ref: "#/components/NoteData"
 
   /categories:
     get:
@@ -164,8 +177,7 @@ paths:
                 type: object
                 properties:
                   msg:
-                    type: string
-                    example: ok
+                    $ref: "#/components/MSGData"
 
                   data:
                     type: object
@@ -189,10 +201,6 @@ paths:
       summary: 登录授权
       tags:
         - authentication
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
       requestBody:
         description: 登录获取`token`
         required: true
@@ -220,9 +228,7 @@ paths:
                 type: object
                 properties:
                   msg:
-                    type: string
-                    example: ok
-
+                    $ref: "#/components/MSGData"
                   data:
                     type: object
                     properties:
@@ -246,3 +252,70 @@ paths:
                     example: 用户名或密码错误
                   data:
                     type: object
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+  MSGData:
+    type: string
+    description: Response status
+    example: ok
+
+  NoteData:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+      content:
+        type: string
+        description: HTML 化 之后的 markdown 内容然后再进行 BASE64 编码的结果
+      is_show:
+        type: integer
+        minimum: 0
+        maximum: 1
+      icon_url:
+        type: string
+        format: url
+        description: icon url
+        example: https://cdn.iconscout.com/icon/free/png-128/python-2-226051.png
+      category:
+        type: string
+      visits:
+        type: integer
+      create_at:
+        type: string
+        format: date-time
+      update_at:
+        type: string
+        format: date-time
+
+  NoteInfo:
+    type: object
+    properties:
+      title:
+        type: "string"
+        example: "learning how to learning how to learn"
+      content:
+        type: "string"
+        example: "some character encoded by BASE64"
+      isShow:
+        type: integer
+        minimum: 0
+        maximum: 1
+        example: 1
+      iconUrl:
+        type: string
+        format: url
+        example: https://cdn.iconscout.com/icon/free/png-128/python-2-226051.png
+      category:
+        type: string
+        example: Python
+    required:
+      - title
+      - content
+      - category
