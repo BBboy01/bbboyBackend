@@ -12,7 +12,7 @@ module.exports = function (mdCode) {
         if (lang && hljs.getLanguage(lang)) {
           try {
             // 得到经过highlight.js之后的html代码
-            const preCode = hljs.highlight(lang, str, true).value;
+            const preCode = highlight(str, { language: lang, ignoreIllegals: true }).value;
             // 以换行进行分割
             const lines = preCode.split(/\n/).slice(0, -1);
             // 添加自定义行号
@@ -41,11 +41,7 @@ module.exports = function (mdCode) {
         let html = lines
           .map((item, index) => {
             return (
-              '<li><span class="line-num" data-line="' +
-              (index + 1) +
-              '"></span>' +
-              item +
-              "</li>"
+              '<li><span class="line-num" data-line="' + (index + 1) + '"></span>' + item + "</li>"
             );
           })
           .join("");

@@ -16,11 +16,7 @@ const verifyLogin = async (ctx, next) => {
   const { username, password } = ctx.request.body;
   // 判断用户名和密码是否为空
   if (!username || !password) {
-    return ctx.app.emit(
-      "error",
-      new Error(NAME_AND_PASSWORD_ARE_REQUIRED),
-      ctx
-    );
+    return ctx.app.emit("error", new Error(NAME_AND_PASSWORD_ARE_REQUIRED), ctx);
   }
   // 判断用户是否存在
   const user = await checkUserExist(username);

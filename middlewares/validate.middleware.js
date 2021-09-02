@@ -28,7 +28,6 @@ const validate = ajv.compile(schema);
 
 const validateAddNote = async (ctx, next) => {
   const valid = validate(ctx.request.body);
-  console.log(ctx.request.body);
   if (!valid) {
     console.log(validate.errors);
     return ctx.app.emit("error", new Error(DATA_VALIDATE_FAILED), ctx);
