@@ -5,17 +5,21 @@ const { getAllCategory } = require("./categories.service");
 class NoteService {
   async getNotes(limit) {
     let result;
-    if (!limit) {
-      result = (await connection.execute(`SELECT * FROM bbboy ORDER BY visits DESC`))[0];
-    } else {
+    let resultOrdered;
+
+    if (limit) {
       result = (
         await connection.execute(`SELECT * FROM bbboy ORDER BY visits DESC LIMIT ?`, [limit])
       )[0];
+      resultOrdered = (
+        await connection.execute(`SELECT * FROM bbboy ORDER BY update_at DESC LIMIT ?`, [limit])
+      )[0];
 
-      return { orderedByVisit: result };
+      return { orderedByVisit: result, orderedByTime: resultOrdered };
     }
-    const statementOrderByTime = `SELECT * FROM bbboy ORDER BY update_at DESC`;
-    const [resultOrdered] = await connection.execute(statementOrderByTime);
+
+    result = (await connection.execute(`SELECT * FROM bbboy ORDER BY visits DESC`))[0];
+    resultOrdered = (await connection.execute(`SELECT * FROM bbboy ORDER BY update_at DESC`))[0];
 
     return { orderedByVisit: result, orderedByTime: resultOrdered };
   }

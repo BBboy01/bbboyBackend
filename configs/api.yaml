@@ -16,6 +16,12 @@ paths:
       summary: 返回所有的笔记信息
       tags:
         - notes
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: 指定返回的笔记信息数量
       responses:
         "200": # status code
           content:
