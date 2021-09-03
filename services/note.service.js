@@ -3,9 +3,17 @@ const md2html = require("../utils/md2html");
 const { getAllCategory } = require("./categories.service");
 
 class NoteService {
-  async getNotes() {
-    const statement = `SELECT * FROM bbboy ORDER BY visits DESC`;
-    const [result] = await connection.execute(statement);
+  async getNotes(limit) {
+    let result;
+    if (!limit) {
+      result = (await connection.execute(`SELECT * FROM bbboy ORDER BY visits DESC`))[0];
+    } else {
+      result = (
+        await connection.execute(`SELECT * FROM bbboy ORDER BY visits DESC LIMIT ?`, [limit])
+      )[0];
+
+      return { orderedByVisit: result };
+    }
     const statementOrderByTime = `SELECT * FROM bbboy ORDER BY update_at DESC`;
     const [resultOrdered] = await connection.execute(statementOrderByTime);
 

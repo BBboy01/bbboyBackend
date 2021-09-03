@@ -2,7 +2,7 @@ const noteService = require("../services/note.service");
 
 class NoteController {
   async getAllNotes(ctx) {
-    const result = await noteService.getNotes();
+    const result = await noteService.getNotes(ctx.query.limit);
 
     ctx.body = { msg: "ok", data: result };
   }
