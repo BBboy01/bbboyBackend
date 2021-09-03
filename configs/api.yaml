@@ -167,7 +167,7 @@ paths:
                   msg:
                     $ref: "#/components/MSGData"
                   data:
-                    $ref: "#/components/NoteData"
+                    $ref: "#/components/NoteDataWithContent"
 
   /categories:
     get:
@@ -277,9 +277,36 @@ components:
         type: integer
       title:
         type: string
-      content:
+      is_show:
+        type: integer
+        minimum: 0
+        maximum: 1
+      icon_url:
         type: string
-        description: HTML 化 之后的 markdown 内容然后再进行 BASE64 编码的结果
+        format: url
+        description: icon url
+        example: https://cdn.iconscout.com/icon/free/png-128/python-2-226051.png
+      category:
+        type: string
+      visits:
+        type: integer
+      create_at:
+        type: string
+        format: date-time
+      update_at:
+        type: string
+        format: date-time
+
+  NoteDataWithContent:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+      content:
+      type: string
+      description: HTML 化 之后的 markdown 内容然后再进行 BASE64 编码的结果
       is_show:
         type: integer
         minimum: 0

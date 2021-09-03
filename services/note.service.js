@@ -6,20 +6,33 @@ class NoteService {
   async getNotes(limit) {
     let result;
     let resultOrdered;
-
     if (limit) {
       result = (
-        await connection.execute(`SELECT * FROM bbboy ORDER BY visits DESC LIMIT ?`, [limit])
+        await connection.execute(
+          `SELECT id, title, is_show, icon_url, category, visits, create_at, update_at FROM bbboy ORDER BY visits DESC LIMIT ?`,
+          [limit]
+        )
       )[0];
       resultOrdered = (
-        await connection.execute(`SELECT * FROM bbboy ORDER BY update_at DESC LIMIT ?`, [limit])
+        await connection.execute(
+          `SELECT id, title, is_show, icon_url, category, visits, create_at, update_at FROM bbboy ORDER BY update_at DESC LIMIT ?`,
+          [limit]
+        )
       )[0];
 
       return { orderedByVisit: result, orderedByTime: resultOrdered };
     }
 
-    result = (await connection.execute(`SELECT * FROM bbboy ORDER BY visits DESC`))[0];
-    resultOrdered = (await connection.execute(`SELECT * FROM bbboy ORDER BY update_at DESC`))[0];
+    result = (
+      await connection.execute(
+        `SELECT id, title, is_show, icon_url, category, visits, create_at, update_at FROM bbboy ORDER BY visits DESC`
+      )
+    )[0];
+    resultOrdered = (
+      await connection.execute(
+        `SELECT id, title, is_show, icon_url, category, visits, create_at, update_at FROM bbboy ORDER BY update_at DESC`
+      )
+    )[0];
 
     return { orderedByVisit: result, orderedByTime: resultOrdered };
   }
@@ -40,7 +53,7 @@ class NoteService {
   }
 
   async getNoteByTitle(title) {
-    const statement = `SELECT * FROM bbboy WHERE title = ?`;
+    const statement = `SELECT id, title FROM bbboy WHERE title = ?`;
     const [result] = await connection.execute(statement, [title]);
 
     return result;
