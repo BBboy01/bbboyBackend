@@ -61,7 +61,6 @@ class NoteService {
 
   async createNote(data) {
     const { title, content, isShow = 1, iconUrl, category } = data;
-    // title = title.split(".").slice(0, -1).join("");
     const htmlContentBase64 = Buffer.from(await md2html(content), "utf-8").toString("base64");
     // if user specified icon url, then replace the prepared icon url
     const iconUrls = await getAllCategory();
