@@ -20,7 +20,7 @@ module.exports = {
   deploy: {
     production: {
       user: "root",
-      host: "49.232.134.166",
+      host: "192.144.218.139",
       ref: "origin/master",
       repo: "git@github.com:BBboy01/bbboyBackend.git",
       path: "/ftp/node/bbboy_blog",
