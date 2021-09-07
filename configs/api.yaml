@@ -263,7 +263,7 @@ paths:
       tags:
         - authentication
       security:
-        - BearerAuth: [add]
+        - BearerAuth: [check]
       responses:
         "200":
           description: 验证`token`是否过期
