@@ -258,6 +258,38 @@ paths:
                     example: 用户名或密码错误
                   data:
                     type: object
+    get:
+      summary: 验证token
+      tags:
+        - authentication
+      security:
+        - BearerAuth: [add]
+      responses:
+        "200":
+          description: 验证`token`是否过期
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    $ref: "#/components/MSGData"
+
+                  data:
+                    type: object
+        "401":
+          description: 检测的`token`已过期
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: 无效或过期的token
+
+                  data:
+                    type: object
 
 components:
   securitySchemes:
